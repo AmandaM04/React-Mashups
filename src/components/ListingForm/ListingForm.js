@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './ListingForm.css';
 
@@ -9,8 +10,18 @@ const defaultListing = {
 };
 
 class ListingForm extends React.Component {
+  static propTypes = {
+    onSubmit: PropTypes.func.isRequired,
+  }
+
   state = {
     newListing: defaultListing,
+  }
+
+  formFieldStringState = (name, e) => {
+    const tempListing = {...this.state.newListing};
+    tempListing[name] = e.target.value;
+    this.setState({newListing: tempListing});
   }
 
   nameChange = (e) => {
@@ -27,7 +38,7 @@ class ListingForm extends React.Component {
 
   formSubmit = (e) => {
     const { onSubmit } = this.props;
-    const { newListing } = this.props;
+    const { newListing } = this.state;
     e.preventDefault();
     if (
       newListing.name &&
@@ -37,7 +48,7 @@ class ListingForm extends React.Component {
       onSubmit(this.state.newListing);
       this.setState({ newListing: defaultListing });
     } else {
-      alert('dear god why????');
+      alert('Complete all fields.');
     }
   }
   render () {
@@ -45,7 +56,7 @@ class ListingForm extends React.Component {
     return (
       <div className="ListingForm">
         <h4 className="text-center">Add New Animal:</h4>
-        <form>
+        <form onSubmit={this.formSubmit}>
           <fieldset className="col-xs-12">
             <label htmlFor="name">Name:</label>
             <input
